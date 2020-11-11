@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load leaflet_tags %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+{% block head_title %}{% trans "Home Page" %}{% endblock %}
+
+{% block body_content %}
+    <h3>{% trans "Welcome To My Location-Based Services Application" %}</h3>
+        {% if user.is_authenticated %}
+            Hi {{ user.username }}!
+            <p><a href="{% url 'logout' %}">Log Out</a></p>
+        {% else %}
+            <p><h5>
+                <pre>You are currently not logged in,
+Please click on the link below to do so
+                </pre>
+            </h5></p>
+            <a href="{% url 'login' %}">Log In</a>
+            <hr><br> {# The grey line and a space line #}
+            <p><h5>
+                <pre>If you don't have an account registered,
+You can do so by following the link below
+                </pre>
+            </h5></p>
+            <a href="{% url 'signup' %}">Sign Up</a>
+        {% endif %}
+{% endblock %}
