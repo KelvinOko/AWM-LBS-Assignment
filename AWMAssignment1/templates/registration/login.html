@@ -9,6 +9,14 @@
         {{ form.as_p }}
         <button type="submit">Log In</button>
     </form>
+
+    <hr> {# The grey line and a space line #}
+        <p><h5>
+            <pre>If you have forgotten your password,
+You can reset it by following the link below
+            </pre>
+        </h5></p>
+        <a href="{% url 'password_reset' %}">Reset Password</a>
 {% endblock %}
 </body>
 </html>
