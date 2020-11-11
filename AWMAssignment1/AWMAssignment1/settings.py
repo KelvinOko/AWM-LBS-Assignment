@@ -40,8 +40,6 @@ environ.Env.read_env()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
-# 'hmm+_khl-mb!3f+vd20***sau)3&-+yo*lrr9luv+#&$*drfb^'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 # False if not in os.environ
@@ -163,6 +161,9 @@ LEAFLET_CONFIG = {
     'SCALE': None,
     'OPACITY': 0.5,
 }
+
+CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE")
+SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE")
 
 
 # Static files (CSS, JavaScript, Images)
