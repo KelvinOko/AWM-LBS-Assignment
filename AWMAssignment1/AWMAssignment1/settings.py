@@ -31,24 +31,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-env = environ.Env(
-    DEBUG = (bool, False),
-    CSRF_COOKIE_SECURE = (bool, True),
-    SESSION_COOKIE_SECURE = (bool, True),
-)
+# env = environ.Env(
+#     DEBUG = (bool, False),
+#     CSRF_COOKIE_SECURE = (bool, True),
+#     SESSION_COOKIE_SECURE = (bool, True),
+# )
 
 # reading .env file
-environ.Env.read_env()
+# environ.Env.read_env()
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+# SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = 'hmm+_khl-mb!3f+vd20***sau)3&-+yo*lrr9luv+#&$*drfb^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True #For remote
 # False if not in os.environ
-DEBUG = env('DEBUG')
+# DEBUG = env('DEBUG') #For remote
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -65,6 +67,7 @@ INSTALLED_APPS = [
     'accounts',
     'crispy_forms',
     'leaflet',
+    'pwa',
 ]
 
 MIDDLEWARE = [
@@ -103,20 +106,20 @@ WSGI_APPLICATION = 'AWMAssignment1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': env.db()
-}
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#         'NAME': 'gis',
-#         'HOST': 'localhost',
-#         'PORT': '25432',
-#         'USER': 'docker',
-#         'PASSWORD': 'docker',
-#     }
+#     'default': env.db()
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'gis',
+        'HOST': 'localhost',
+        'PORT': '25432',
+        'USER': 'docker',
+        'PASSWORD': 'docker',
+    }
+}
 
 
 # Password validation
@@ -165,8 +168,8 @@ LEAFLET_CONFIG = {
     'OPACITY': 0.5,
 }
 
-CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE")
-SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE")
+# CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE")
+# SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE")
 
 
 # Static files (CSS, JavaScript, Images)
@@ -174,6 +177,9 @@ SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE")
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
@@ -181,3 +187,30 @@ LOGOUT_REDIRECT_URL = 'home'
 # Added for Reset Password
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+
+# https://github.com/silviolleite/django-pwa
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'templates', 'serviceworker.js')
+PWA_APP_NAME = 'LBS_App'
+PWA_APP_DESCRIPTION = "Find nearby services based on your location"
+PWA_APP_THEME_COLOR = 'black'
+PWA_APP_BACKGROUND_COLOR = 'white'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_ROOT_URL = '/'
+# PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/location.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/images/icons/splash-640x1136.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_LANG = 'en-GB'
+
+# PWA_APP_DEBUG_MODE = False

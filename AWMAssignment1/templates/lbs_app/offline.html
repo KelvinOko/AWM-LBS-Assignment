@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<head>
+    <link href="{% static '/css/django-pwa-app.css' %}" rel="stylesheet">
+</head>
+
+{% block title %}Default offline template{% endblock %}
+
+{% block body_content %}
+    <h1>You are currently not connected to any networks.</h1>
+{% endblock %}
+
+

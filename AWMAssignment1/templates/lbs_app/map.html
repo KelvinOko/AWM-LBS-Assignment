@@ -20,6 +20,27 @@
 {% endblock %}
 
 {% block body_content %}
+
+    <!-- Dropdown List for Possible Services -->
+    <select id="placeType" style="float: right" class="browser-default custom-select" onchange="onSelectPlace()">
+        <option selected disabled hidden>Please choose an option</option>
+        <optgroup label="Personal Care">
+        <option value="barber">Barbers</option>
+        <option value="hairSalon">Hair Salons</option>
+        <option value="tanningSalon">Tanning Salons</option>
+        <option value="nailSalon">Nail Salons</option>
+        </optgroup>
+        <optgroup label="Health and Wellbeing">
+        <option value="gym">Gyms</option>
+        <option value="pharmacy">Pharmacies</option>
+        </optgroup>
+        <optgroup label="Cosmetic">
+        <option value="teeth">Teeth Whitening</option>
+        <option value="hairRemoval">Laser Hair Removal</option>
+        </optgroup>
+    </select>
+
+    <!-- Map -->
 {#        <h3>{% trans "Map" %}</h3>#}
 {#        <div style="width: 100%">#}
         {% leaflet_map "map" callback="window.map_init_basic" %}
@@ -32,6 +53,12 @@
         var HOST = location.protocol + "//" + location.host;
         var locationMarker;
         var circle;
+        var places = [];
+        var placeMarker = [];
+        var myMap;
+        var currentLat;
+        var currentLng;
+
         $("#map").css({
             "width": "100%",
             "height": $(document).height() - ($("#header").height() + $("#footer").height() + 45)
@@ -47,6 +74,8 @@
         function updateLocation(map) {
             navigator.geolocation.getCurrentPosition(
                 function (pos) {
+                    currentLat = pos.coords.latitude;
+                    currentLng = pos.coords.longitude;
                     setMapToCurrentLocation(map, pos);
                     update_db(pos);
                 },
@@ -59,68 +88,129 @@
             );
         }
 
-    function setMapToCurrentLocation(map, pos) {
-        console.log("In setMapToCurrentLocation.");
-        var myLatLon = L.latLng(pos.coords.latitude,
-    pos.coords.longitude);
-        map.flyTo(myLatLon, 16);
-        if (locationMarker) {
-            map.removeLayer(locationMarker);
-        }
-        locationMarker = L.marker(myLatLon).addTo(map);
-        if (circle) {
-            map.removeLayer(circle);
-        }
-        circle = L.circle(myLatLon, {
-            color: 'blue',
-            fillColor: 'blue',
-            fillOpacity: 0.3,
-            radius: pos.coords.accuracy
-        }).addTo(map);
-        $(".toast-body").html("Found location<br>Lat: " + myLatLon.lat + " Lon: " + myLatLon.lng);
-        $(".toast").toast('show');
-    }
-
-    function update_db(pos) {
-
-        var locString = pos.coords.longitude + ", " + pos.coords.latitude;
-        $.ajax({
-            type: "POST",
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            url: HOST + "/updatedb/",
-            data: {
-                point: locString
+        function setMapToCurrentLocation(map, pos) {
+            console.log("In setMapToCurrentLocation.");
+            var myLatLon = L.latLng(pos.coords.latitude,
+        pos.coords.longitude);
+            map.flyTo(myLatLon, 16);
+            if (locationMarker) {
+                map.removeLayer(locationMarker);
             }
-        }).done(function (data, status, xhr) {
-            console.log(data["message"])
-            var originalMsg = $(".toast-body").html();
-            $(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
-        }).fail(function (xhr, status, error) {
-            console.log(error);
-            var originalMsg = $(".toast-body").html();
-            $(".toast-body").html(originalMsg + "<br/>" + error);
-        }).always(function () {
-            console.log("find_loc_ed finished");
+            locationMarker = L.marker(myLatLon).addTo(map)
+            if (circle) {
+                map.removeLayer(circle);
+            }
+            circle = L.circle(myLatLon, {
+                color: 'blue',
+                fillColor: 'blue',
+                fillOpacity: 0.3,
+                radius: pos.coords.accuracy
+            }).addTo(map);
+            $(".toast-body").html("Found location<br>Lat: " + myLatLon.lat + " Lon: " + myLatLon.lng);
             $(".toast").toast('show');
-        });
-    }
+        }
 
-    function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+        function update_db(pos) {
+            var locString = pos.coords.longitude + ", " + pos.coords.latitude;
+            $.ajax({
+                type: "POST",
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                url: HOST + "/LBS_App/updatedb/",
+                data: {
+                    lat: pos.coords.longitude,
+                    lon: pos.coords.latitude
+                    {#point: locString#}
+                }
+            }).done(function (data, status, xhr) {
+                console.log(data["message"])
+                var originalMsg = $(".toast-body").html();
+                $(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
+            }).fail(function (xhr, status, error) {
+                console.log(error);
+                var originalMsg = $(".toast-body").html();
+                $(".toast-body").html(originalMsg + "<br/>" + error);
+            }).always(function () {
+                console.log("find_loc_ed finished");
+                $(".toast").toast('show');
+            });
+        }
+
+        function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
                     }
                 }
+                return cookieValue;
             }
-            return cookieValue;
+
+        class Place {
+            constructor(name, address, lat, lng) {
+                this.name = name;
+                this.address = address;
+                this.lat = lat;
+                this.lng = lng;
+            }
         }
+
+        function onSelectPlace(){
+            var placeType = document.getElementById("placeType").value;
+            console.log(currentLat)
+            console.log(currentLng)
+            console.log(placeType)
+
+            removeMarker();
+            $.ajax({
+                type: "POST",
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                url: HOST + "/LBS_App/updatePlaces/",
+                data: {
+                    type: placeType,
+                    lat: currentLat,
+                    lng: currentLng
+                }
+            }).done(function (data, status, xhr) {
+                for (i = 0; i < data['names'].length; i++){
+                    currentPlace = new Place(data['names'][i], data['address'][i], data['lat'][i], data['lng'][i])
+                    places.push(currentPlace)
+                    addMarker(currentPlace);
+                }
+            }).fail(function (xhr, status, error) {
+                console.log(error);
+            })
+        }
+
+        function removeMarker(){
+            if(placeMarker.length !== 0){
+                for (i = 0; i < placeMarker.length; i++){
+                    myMap.removeLayer(placeMarker[i]);
+                }
+                placeMarker = new Array();
+                places = new Array();
+            }
+        }
+
+        function addMarker(currentPlace){
+            latLng = L.latLng(currentPlace.lat, currentPlace.lng);
+            locationMarker = L.marker(latLng).addTo(myMap).on('click', function(e){
+                $(".toast-header .mr-auto").html(currentPlace.name);
+                $(".toast-body").html("Address: " + currentPlace.address + "<br>Lat: " + currentPlace.lat + "<br>Lon: " + currentPlace.lng);
+                $(".toast").toast('show');
+            });
+            placeMarker.push(locationMarker);
+        }
+
+
     </script>
 {% endblock %}

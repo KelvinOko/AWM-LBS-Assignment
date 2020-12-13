@@ -23,4 +23,6 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', TemplateView.as_view(template_name='lbs_app/home.html'), name='home'),
     path('map.html', TemplateView.as_view(template_name='lbs_app/map.html'), name='map'),
+    path('LBS_App/', include('LBS_App.urls')),
+    path('', include('pwa.urls')),
 ]
