@@ -33,7 +33,7 @@ class Profile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
-    location = models.PointField(
+    last_location = models.PointField(
         editable=False,
         blank=True,
         null=True,

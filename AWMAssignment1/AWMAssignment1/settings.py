@@ -31,26 +31,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-# env = environ.Env(
-#     DEBUG = (bool, False),
-#     CSRF_COOKIE_SECURE = (bool, True),
-#     SESSION_COOKIE_SECURE = (bool, True),
-# )
+env = environ.Env(
+    DEBUG = (bool, False),
+    CSRF_COOKIE_SECURE = (bool, True),
+    SESSION_COOKIE_SECURE = (bool, True),
+)
 
 # reading .env file
-# environ.Env.read_env()
+environ.Env.read_env()
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = env('SECRET_KEY')
-SECRET_KEY = 'hmm+_khl-mb!3f+vd20***sau)3&-+yo*lrr9luv+#&$*drfb^'
+SECRET_KEY = env('SECRET_KEY')
+# SECRET_KEY = 'hmm+_khl-mb!3f+vd20***sau)3&-+yo*lrr9luv+#&$*drfb^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #For remote
+# DEBUG = True #For local
 # False if not in os.environ
-# DEBUG = env('DEBUG') #For remote
+DEBUG = env('DEBUG') #For remote
 
-# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+# ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -106,20 +106,20 @@ WSGI_APPLICATION = 'AWMAssignment1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': env.db()
-# }
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'gis',
-        'HOST': 'localhost',
-        'PORT': '25432',
-        'USER': 'docker',
-        'PASSWORD': 'docker',
-    }
+    'default': env.db()
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#         'NAME': 'gis',
+#         'HOST': 'localhost',
+#         'PORT': '25432',
+#         'USER': 'docker',
+#         'PASSWORD': 'docker',
+#     }
+# }
 
 
 # Password validation
@@ -168,8 +168,8 @@ LEAFLET_CONFIG = {
     'OPACITY': 0.5,
 }
 
-# CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE")
-# SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE")
+CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE")
+SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE")
 
 
 # Static files (CSS, JavaScript, Images)

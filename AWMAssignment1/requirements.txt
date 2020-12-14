@@ -3,10 +3,10 @@ Django==3.1.2
 django-crispy-forms==1.9.2
 django-environ==0.4.5
 django-leaflet==0.27.1
+django-pwa==1.0.10
 psycopg2==2.8.6
+python-google-places==1.4.2
 pytz==2020.1
-sqlparse==0.4.1
-whitenoise==5.2.0
+six==1.15.0
+sqlparse==0.4.11
 uWSGI==2.0.19.1
-
-

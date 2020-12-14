@@ -1,9 +1,4 @@
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.contrib.gis.geos import Point
-from . import models
-from django.shortcuts import render
-from django.http import JsonResponse
 from googleplaces import GooglePlaces, types
 from .models import Locate
 
@@ -16,55 +11,20 @@ def updatedb(request):
         location.lat = lat
         location.lon = lon
         location.save()
-        return JsonResponse({"message": "Successfully updated"}, status=200)
+        return JsonResponse({"message": f"Set location to ({location.lat}, {location.lon})."}, status=200)
     except Exception as e:
         return JsonResponse({"message": str(e)}, status=400)
 
-# @login_required
-# def updatedb(request):
-#     try:
-#         user_profle = models.Profile.objects.get(user=request.user)
-#         if not user_profle:
-#             raise ValueError("Can't get User details")
-#
-#         lat = request.POST["lat"]
-#         lon = request.POST["lon"]
-#
-#         location = Locate()
-#         location.lat = lat
-#         location.lon = lon
-#         location.save()
-#         return JsonResponse({"message": "Success, location has been updated"}, status=200)
-#     except Exception as e:
-#         return JsonResponse({"message": str(e)}, status=400)
-
-# def updatedb(request):
-#     try:
-#         user_profle = models.Profile.objects.get(user=request.user)
-#         if not user_profle:
-#             raise ValueError("Can't get User details")
-#
-#         point = request.POST["point"].split(",")
-#         point = [float(part) for part in point]
-#         point = Point(point, srid=4326)
-#
-#         user_profle.last_location = point
-#         user_profle.save()
-#
-#         return JsonResponse({"message": f"Set location to {point.wkt}."}, status=200)
-#     except Exception as e:
-#         return JsonResponse({"message": str(e)}, status=400)
 
 def getPlace(placeType):
     switcher = {
-        'barber': types.TYPE_HAIR_CARE,
         'hairSalon': types.TYPE_HAIR_CARE,
-        'tanningSalon': types.TYPE_BEAUTY_SALON,
-        'nailSalon': types.TYPE_BEAUTY_SALON,
-        'gym': types.TYPE_GYM,
-        'pharmacy': types.TYPE_PHARMACY,
+        'mall': types.TYPE_SHOPPING_MALL,
+        'shoe': types.TYPE_SHOE_STORE,
+        'clothing': types.TYPE_CLOTHING_STORE,
         'teeth': types.TYPE_DENTIST,
-        'hairRemoval': types.TYPE_HAIR_CARE,
+        'restaurant': types.TYPE_RESTAURANT,
+        'groceries': types.TYPE_GROCERY_OR_SUPERMARKET,
     }
     return switcher.get(placeType, "Invalid Argument")
 

@@ -25,18 +25,19 @@
     <select id="placeType" style="float: right" class="browser-default custom-select" onchange="onSelectPlace()">
         <option selected disabled hidden>Please choose an option</option>
         <optgroup label="Personal Care">
-        <option value="barber">Barbers</option>
         <option value="hairSalon">Hair Salons</option>
-        <option value="tanningSalon">Tanning Salons</option>
-        <option value="nailSalon">Nail Salons</option>
         </optgroup>
-        <optgroup label="Health and Wellbeing">
-        <option value="gym">Gyms</option>
-        <option value="pharmacy">Pharmacies</option>
+        <optgroup label="Shopping">
+        <option value="mall">Shopping Centre</option>
+        <option value="shoe">Shoe Shops</option>
+        <option value="clothing">Clothing Stores</option>
         </optgroup>
         <optgroup label="Cosmetic">
         <option value="teeth">Teeth Whitening</option>
-        <option value="hairRemoval">Laser Hair Removal</option>
+        </optgroup>
+        <optgroup label="Food & Groceries">
+        <option value="restaurant">Restaurant</option>
+        <option value="groceries">Groceries</option>
         </optgroup>
     </select>
 
@@ -65,6 +66,7 @@
         });
         function map_init_basic(map, options) {
             var pos;
+            myMap = map;
             map.setView([53.5, -8.5], 11);
             updateLocation(map);
             map.on('touchstart click dblclick ', function () {
@@ -119,9 +121,8 @@
                 },
                 url: HOST + "/LBS_App/updatedb/",
                 data: {
-                    lat: pos.coords.longitude,
-                    lon: pos.coords.latitude
-                    {#point: locString#}
+                    lat: pos.coords.latitude,
+                    lon: pos.coords.longitude
                 }
             }).done(function (data, status, xhr) {
                 console.log(data["message"])
@@ -164,9 +165,6 @@
 
         function onSelectPlace(){
             var placeType = document.getElementById("placeType").value;
-            console.log(currentLat)
-            console.log(currentLng)
-            console.log(placeType)
 
             removeMarker();
             $.ajax({
@@ -201,9 +199,19 @@
             }
         }
 
+        var greenIcon = new L.Icon({
+          iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+        });
+
         function addMarker(currentPlace){
             latLng = L.latLng(currentPlace.lat, currentPlace.lng);
-            locationMarker = L.marker(latLng).addTo(myMap).on('click', function(e){
+            locationMarker = L.marker(latLng, {icon: greenIcon}) .addTo(myMap).on('click', function(e){
+
                 $(".toast-header .mr-auto").html(currentPlace.name);
                 $(".toast-body").html("Address: " + currentPlace.address + "<br>Lat: " + currentPlace.lat + "<br>Lon: " + currentPlace.lng);
                 $(".toast").toast('show');
